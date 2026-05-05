@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import argparse
 import logging
 import sys
@@ -20,10 +24,10 @@ logger = logging.getLogger(__name__)
 
 
 BANNER = """
-╔══════════════════════════════════════════════════════════════╗
-║          🤖  RAG AGENT DOCUMENTAIRE  —  Gemini 1.5 Flash     ║
-║          LangChain · Chroma · ReAct · Mémoire conversationnelle  ║
-╚══════════════════════════════════════════════════════════════╝
+
+        RAG AGENT DOCUMENTAIRE      
+        LangChain · Chroma · ReAct · Mémoire conversationnelle
+
 
 Commandes spéciales :
   /reset    → Efface la mémoire de conversation
@@ -69,7 +73,7 @@ def interactive_loop(agent) -> None:
 
     while True:
         try:
-            user_input = input("🧑 Vous : ").strip()
+            user_input = input(" Vous : ").strip()
         except (KeyboardInterrupt, EOFError):
             print("\nAu revoir !")
             break
@@ -84,7 +88,7 @@ def interactive_loop(agent) -> None:
 
         if user_input.lower() == "/reset":
             agent.reset_memory()
-            print("✅ Mémoire effacée.\n")
+            print(" Mémoire effacée.\n")
             continue
 
         if user_input.lower() == "/docs":
@@ -94,26 +98,26 @@ def interactive_loop(agent) -> None:
             continue
 
         # Requête normale
-        print("\n🤔 Réflexion en cours...\n")
+        print("\n Réflexion en cours...\n")
         try:
             result = agent.chat(user_input)
         except Exception as exc:
             logger.error("Erreur agent : %s", exc)
-            print(f"❌ Erreur : {exc}\n")
+            print(f" Erreur : {exc}\n")
             continue
 
         # Affichage de la réponse
-        print(f"🤖 Agent : {result['answer']}")
+        print(f" Agent : {result['answer']}")
 
         # Sources
         if result["sources"]:
             sources_str = " · ".join(f"[{s}]" for s in result["sources"])
-            print(f"\n📚 Sources : {sources_str}")
+            print(f"\n Sources : {sources_str}")
 
         print(f"\n{'─' * 60}\n")
 
 
-# ── Main ───────────────────────────────────────────────────────────────────────
+# ── Main
 
 def main() -> None:
     args = parse_args()
@@ -121,7 +125,7 @@ def main() -> None:
     # Vérification de la clé API
     from config import GOOGLE_API_KEY
     if not GOOGLE_API_KEY:
-        print("❌ GOOGLE_API_KEY manquante. Crée un fichier .env avec :")
+        print(" GOOGLE_API_KEY manquante. Crée un fichier .env avec :")
         print("   GOOGLE_API_KEY=ta_clé_ici")
         sys.exit(1)
 
@@ -129,11 +133,11 @@ def main() -> None:
     try:
         vectorstore = setup_vectorstore(no_ingest=args.no_ingest)
     except FileNotFoundError as e:
-        print(f"❌ {e}")
+        print(f" {e}")
         sys.exit(1)
 
     if args.ingest_only:
-        print("✅ Ingestion terminée.")
+        print(" Ingestion terminée.")
         return
 
     # Agent
