@@ -3,55 +3,20 @@
 
 ---
 
-## Architecture
-
-```
-docs/                        ← Dépose tes PDF/TXT ici
- │
- ▼
-rag/ingestion.py             ← Pipeline d'ingestion
- ├─ load_documents()         │  Lecture PDF + TXT
- ├─ split_documents()        │  Chunking (1000 tokens, overlap 200)
- └─ build_vectorstore()      │  Embeddings → Chroma DB
-
-chroma_db/                   ← Vecteurs persistés sur disque
- │
- ▼
-rag/retrieval.py             ← Retrieval sémantique
- └─ retrieve()               │  Top-K similarity search
-
-agent/tools.py               ← 4 tools personnalisés
- ├─ list_files               │  Liste les documents disponibles
- ├─ read_file                │  Lit un fichier brut
- ├─ search_documents         │  Recherche RAG (tool principal)
- └─ ingest_document          │  Indexation à la volée
-
-agent/agent.py               ← Agent ReAct (LangChain)
- ├─ Gemini 1.5 Flash         │  LLM backbone
- ├─ ConversationWindowMemory │  Mémoire glissante (10 tours)
- └─ AgentExecutor            │  Boucle Thought → Action → Observation
-
-main.py                      ← CLI interactif
-```
 
 ## Flux ReAct
 
 ```
 Question utilisateur
-       │
-       ▼
+      
   [Thought] Que dois-je faire pour répondre ?
-       │
-       ▼
+     
   [Action] search_documents("...")
-       │
-       ▼
+       
   [Observation] Chunks pertinents + sources
-       │
-       ▼
+       
   [Thought] J'ai assez d'informations
-       │
-       ▼
+       
   [Final Answer] Réponse + citations [source.pdf]
 ```
 
@@ -116,20 +81,20 @@ python main.py --ingest-only
 
 ```
 rag_agent/
-├── main.py              ← Point d'entrée
-├── config.py            ← Configuration centralisée
+├── main.py              <- Point d'entrée
+├── config.py            <- Configuration centralisée
 ├── requirements.txt
 ├── .env.example
 ├── agent/
-│   ├── agent.py         ← Agent ReAct + mémoire
-│   └── tools.py         ← Tools personnalisés
+│   ├── agent.py         <- Agent ReAct + mémoire
+│   └── tools.py         <- Tools personnalisés
 ├── rag/
-│   ├── ingestion.py     ← Chargement + chunking + vectorisation
-│   └── retrieval.py     ← Recherche sémantique + formatage sources
-├── docs/                ← Dépose tes documents ici
-├── chroma_db/           ← Base vectorielle (auto-créée)
+│   ├── ingestion.py     <- Chargement + chunking + vectorisation
+│   └── retrieval.py     <- Recherche sémantique + formatage sources
+├── docs/                <- Dépose tes documents ici
+├── chroma_db/           <- Base vectorielle (auto-créée)
 └── tests/
-    └── test_pipeline.py ← Tests unitaires
+    └── test_pipeline.py <- Tests unitaires
 ```
 
 ## Paramètres configurables (config.py)
